@@ -1,0 +1,133 @@
+--alter session set "_oracle_script"=true;  
+--create user VazquezJoseAntonioeje2 identified BY VazquezJoseAntonioeje2 ;
+--GRANT CONNECT, RESOURCE, DBA TO VazquezJoseAntonioeje2 ;
+CREATE TABLE PERSONA(
+	id NUMBER(10),
+	nif VARCHAR2(9),
+	nombre VARCHAR2(25),
+	apellido1 VARCHAR2(50),
+	apellido2 VARCHAR2(50),
+	ciudad VARCHAR2(25),
+	direccion VARCHAR2(50),
+	telefono VARCHAR2(9),
+	fecha_nacimiento DATE,
+	sexo VARCHAR2(20),
+	tipo VARCHAR2(20),
+	CONSTRAINT PK_PERSONA PRIMARY KEY(id),
+	CONSTRAINT CK_PERSONA CHECK (sexo IN ('H','M')),
+	CONSTRAINT CK2_PERSONA CHECK (tipo IN ('S','C'))
+);
+
+CREATE TABLE ALUMNO_SE_MATRICULA_ASIGNATURA(
+	id_alumno NUMBER(10),
+	id_asignatura NUMBER(10),
+	id_curso_escolar NUMBER(10),
+	CONSTRAINT PK_ALUMNO_SE_MATRICULA_ASIGNATURA PRIMARY KEY (id_alumno,id_asignatura,id_curso_escolar)
+);
+
+CREATE TABLE CURSO_ESCOLAR(
+	id NUMBER(10),
+	anyo_inicio DATE,
+	anyo_fin DATE,
+	CONSTRAINT PK_CURSO_ESCOLAR PRIMARY KEY (id)
+);
+ALTER TABLE ALUMNO_SE_MATRICULA_ASIGNATURA ADD CONSTRAINT FK_ALUMNO_SE_MATRICULA_ASIGNATURA FOREIGN KEY(id_curso_escolar) REFERENCES CURSO_ESCOLAR(id);
+
+CREATE TABLE ASIGNATURA(
+	id NUMBER(10),
+	nombre VARCHAR2(100),
+	creditos FLOAT,
+	tipo VARCHAR2(20),
+	curso VARCHAR2(3),
+	cuatrimestre VARCHAR2(3),
+	id_profesor NUMBER(10),
+	id_grado NUMBER(10),
+	CONSTRAINT PK_ASIGNATURA PRIMARY KEY (id),
+	CONSTRAINT CK_ASIGNATURA CHECK(tipo IN ('DIFICIL','FACIL')),
+	CONSTRAINT CK2_ASIGNATURA CHECK(curso=UPPER(curso) ),
+	CONSTRAINT CK3_ASIGNATURA CHECK(cuatrimestre=UPPER(cuatrimestre) )
+);
+
+CREATE TABLE GRADO(
+	id NUMBER(10),
+	nombre VARCHAR2(100),
+	CONSTRAINT PK_GRADO PRIMARY KEY (id)
+);
+
+ALTER TABLE  ASIGNATURA ADD CONSTRAINT FK_ASIGNATURA FOREIGN KEY (id_grado) REFERENCES GRADO(id);
+
+CREATE TABLE PROFESOR (
+	id_profesor NUMBER(10),
+	id_departamento NUMBER(10),
+	CONSTRAINT PK_PROFESOR PRIMARY KEY (id_profesor),
+	CONSTRAINT FK_PROFESOR FOREIGN KEY(id_profesor) REFERENCES PERSONA(id)
+);
+
+CREATE TABLE DEPARTAMENTO (
+	id NUMBER(10),
+	nombre VARCHAR2(50),
+	CONSTRAINT PK_DEPARTAMENTO PRIMARY KEY(id)
+);
+
+ALTER TABLE PROFESOR ADD CONSTRAINT FK2_PROFESOR FOREIGN KEY (id_departamento) REFERENCES DEPARTAMENTO(id);
+ALTER TABLE ASIGNATURA ADD CONSTRAINT FK2_ASIGNATURA FOREIGN KEY(id_profesor) REFERENCES PERSONA(id);
+ALTER TABLE ALUMNO_SE_MATRICULA_ASIGNATURA ADD CONSTRAINT FK2_ALUMNO_SE_MATRICULA_ASIGNATURA FOREIGN KEY(id_asignatura) REFERENCES ASIGNATURA (id);
+ALTER TABLE ALUMNO_SE_MATRICULA_ASIGNATURA ADD CONSTRAINT FK3_ALUMNO_SE_MATRICULA_ASIGNATURA FOREIGN KEY(id_alumno) REFERENCES PERSONA (id);
+
+
+
+--En la tabla personas el campo nombre siempre debe de introducirse en mayúsculas.
+ALTER TABLE PERSONA ADD CONSTRAINT CK3_PERSONA CHECK (nombre=UPPER(nombre));
+
+
+--Añade el campo edad a la tabla persona como un campo numérico de 3
+ALTER TABLE PERSONA ADD COLUMN edad NUMBER(3);
+
+
+--Añade una restricción para que el nuevo campo edad deba estar comprendido entre 7 y 25 años.
+ALTER TABLE PERSONA ADD CONSTRAINT CK4_PERSONA CHECK(edad>7 AND edad<25));
+
+--En el curso escolar, el anyo_inicio no puede ser mayor que el anyo_fin
+ALTER TABLE CURSO_ESCOLAR ADD CONSTRAINT CK_1_CURSO_ESCOLAR CHECK (anyo_inicio<anyo_fin)); 
+
+--El campo cuatrimestre solo puede tomar valores entre 1 y 4.
+
+
+--En la tabla asignatura los valores que contendrá el campo tipo deberánempezar siempre por la letra T.
+ALTER TABLE ASIGNATURA  ADD CONSTRAINT CK4_ASIGNATURA CHECK (tipo LIKE ('T%');
+
+--Crea una restricción para la tabla persona donde al año de la Fecha_nacimiento debe ser mayor que 1981.
+
+ALTER TABLE PERSONA ADD CONSTRAINT CK3_PERSONA  CHECK (fecha_nacimiento>1981));
+
+--Elimina la colunna creditos de la tabla asignatura.
+ALTER TABLE ASIGNATURA DROP COLUMN creditos;
+
+
+--Borra todas las tablas.
+--DROP TABLE PERSONA CASCADE CONSTRAINT;
+--DROP TABLE DEPARTAMENTO CASCADE CONSTRAINT;
+--DROP TABLE PROFESOR CASCADE CONSTRAINT;
+--DROP TABLE GRADO CASCADE CONSTRAINT;
+--DROP TABLE ASIGNATURA CASCADE CONSTRAINT;
+--DROP TABLE CURSO_ESCOLAR CASCADE CONSTRAINT;
+--DROP TABLE ALUMNO_SE_MATRICULA_ASIGNATURA CASCADE CONSTRAINT;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	

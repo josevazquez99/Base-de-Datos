@@ -1,0 +1,195 @@
+alter session set "_oracle_script"=true;  
+create USER JoseVazquez identified by JoseVazquez;
+GRANT CONNECT, RESOURCE, DBA TO JoseVazquez;
+--Creación de usuario DMLJoseAntonio
+CREATE TABLE ASIGNATURA(
+	codasignatura VARCHAR(20),
+	nombre VARCHAR(40),
+	idprofesor NUMBER(10),
+	CONSTRAINT PK_ASIGNATURA PRIMARY KEY(codasignatura)
+);
+CREATE TABLE ALUMNO(
+	nummatricula  NUMBER(10),
+	nombre VARCHAR(40),
+	fechanacimiento DATE,
+	telefono NUMBER(9),
+	CONSTRAINT PK_ALUMNO PRIMARY KEY(nummatricula)
+);
+
+CREATE TABLE PROFESOR(
+	idprofesor NUMBER(10),
+	nif_p VARCHAR(9),
+	nombre VARCHAR(40),
+	especialidad VARCHAR(20),
+	telefono NUMBER(9),
+	CONSTRAINT PK_PROFESOR PRIMARY KEY(idprofesor)
+);
+ALTER TABLE ASIGNATURA ADD CONSTRAINT FK_ASIGNATURA FOREIGN KEY(idprofesor) REFERENCES PROFESOR(idprofesor);
+CREATE TABLE RECIBE(
+	nummatricula NUMBER(10),
+	codasignatura VARCHAR(20),
+	cursoescolar VARCHAR(20),
+	CONSTRAINT PK_RECIBE PRIMARY KEY(nummatricula,codasignatura,cursoescolar),
+	CONSTRAINT FK_RECIBE FOREIGN KEY(nummatricula) REFERENCES ALUMNO(nummatricula),
+	CONSTRAINT FK2_RECIBE FOREIGN KEY(codasignatura) REFERENCES ASIGNATURA(codasignatura)
+);
+-- APARTADO 2
+INSERT INTO PROFESOR 
+VALUES (1,'47535211P','Jose','Mates',678133987);
+INSERT INTO PROFESOR 
+VALUES (2,'47535211X','Pepe','Ingles',678133999);
+INSERT INTO ASIGNATURA
+VALUES(1,'Mates',1);
+INSERT INTO ASIGNATURA
+VALUES(2,'Ingles',2);
+INSERT INTO ALUMNO
+VALUES (1,'Jose',TO_DATE('12/12/1999','DD/MM/YYYY'),678234543);
+INSERT INTO ALUMNO
+VALUES (2,'Joselito',TO_DATE('12/12/1998','DD/MM/YYYY'),678234544);
+INSERT INTO ALUMNO
+VALUES (3,'Josefa',TO_DATE('12/12/1997','DD/MM/YYYY'),678234545);
+INSERT INTO ALUMNO
+VALUES (4,'Josefina',TO_DATE('12/12/1996','DD/MM/YYYY'),678234546);
+INSERT INTO ALUMNO
+VALUES (5,'Pepe',TO_DATE('12/12/1995','DD/MM/YYYY'),678234547);
+INSERT INTO ALUMNO
+VALUES (6,'Pepito',TO_DATE('12/12/1994','DD/MM/YYYY'),678234548);
+INSERT INTO ALUMNO
+VALUES (7,'Raul',TO_DATE('12/12/1993','DD/MM/YYYY'),678234538);
+INSERT INTO ALUMNO
+VALUES (8,'Kisko',TO_DATE('12/12/1999','DD/MM/YYYY'),678234549);
+INSERT INTO ALUMNO
+VALUES (9,'Juan',TO_DATE('12/12/1999','DD/MM/YYYY'),678234535);
+INSERT INTO ALUMNO
+VALUES (10,'Sara',TO_DATE('12/12/1999','DD/MM/YYYY'),678234567);
+INSERT INTO RECIBE 
+VALUES (1,'1','1');
+INSERT INTO RECIBE 
+VALUES (1,'2','1');
+INSERT INTO RECIBE 
+VALUES (2,'1','1');
+INSERT INTO RECIBE 
+VALUES (2,'2','1');
+INSERT INTO RECIBE 
+VALUES (3,'1','1');
+INSERT INTO RECIBE 
+VALUES (3,'2','1');
+INSERT INTO RECIBE 
+VALUES (4,'1','1');
+INSERT INTO RECIBE 
+VALUES (4,'2','1');
+INSERT INTO RECIBE 
+VALUES (5,'1','1');
+INSERT INTO RECIBE 
+VALUES (5,'2','1');
+INSERT INTO RECIBE 
+VALUES (6,'1','1');
+INSERT INTO RECIBE 
+VALUES (6,'2','1');
+INSERT INTO RECIBE 
+VALUES (7,'1','1');
+INSERT INTO RECIBE 
+VALUES (7,'2','1');
+INSERT INTO RECIBE 
+VALUES (8,'1','1');
+INSERT INTO RECIBE 
+VALUES (8,'2','1');
+INSERT INTO RECIBE 
+VALUES (9,'1','1');
+INSERT INTO RECIBE 
+VALUES (9,'2','1');
+INSERT INTO RECIBE 
+VALUES (10,'1','1');
+INSERT INTO RECIBE 
+VALUES (10,'2','1');
+
+-- APARTADO 3
+INSERT INTO ALUMNO
+VALUES (1,'Manuel',TO_DATE('12/12/1997','DD/MM/YYYY'),678234565);
+INSERT INTO ALUMNO
+VALUES (1,'Federico',TO_DATE('12/12/1999','DD/MM/YYYY'),678234589);
+--No se puede, nummatricula es unico(identifica de manera única el valor de nummatricula).No puede estar asignado a más de un alumno.
+
+--APARTADO 4
+INSERT INTO ALUMNO (nummatricula,nombre,fechanacimiento)
+VALUES (11,'Alberto',TO_DATE('12/12/1999','DD/MM/YYYY'));
+INSERT INTO ALUMNO (nummatricula,nombre,fechanacimiento)
+VALUES (12,'Fernando',TO_DATE('12/12/1999','DD/MM/YYYY'));
+INSERT INTO ALUMNO (nummatricula,nombre,fechanacimiento)
+VALUES (13,'Paco',TO_DATE('12/12/1999','DD/MM/YYYY'));
+
+--APARTADO 5
+UPDATE ALUMNO
+SET telefono=685954236
+WHERE nummatricula=11;
+
+UPDATE ALUMNO
+SET telefono=685954237
+WHERE nummatricula=12;
+
+UPDATE ALUMNO
+SET telefono=685954238
+WHERE nummatricula=13;
+
+--APARTADO 6
+UPDATE ALUMNO
+SET fechanacimiento=TO_DATE('22/07/1981','dd/mm/yyyy')
+WHERE fechanacimiento >= TO_CHAR('01/01/2001','dd/mm/yyyy');
+
+--APARTADO 7
+UPDATE PROFESOR
+SET especialidad='Informatica'
+WHERE telefono NOT LIKE '9%';
+
+--APARATADO 8
+DELETE FROM RECIBE
+WHERE codasignatura=1;
+
+--APARTADO 9
+DELETE FROM ASIGNATURA
+WHERE codasignatura=1;
+
+
+--APARTADO 10
+DROP TABLE ASIGNATURA;
+
+--No deja ya que la tabla asignatura sigue teniendo valores.
+--Con el MYSQL no habría ocurrido ningún problema.
+
+
+-- APARTADO 11 
+
+DROP TABLE PROFESOR;
+--No deja ya que la tabla profesor sigue teniendo valores.
+--Con el MYSQL no habría ocurrido ningún problema.
+
+--APARTADO 12
+ALTER TABLE ALUMNO ADD CONSTRAINT CK_ALUMNO CHECK (nombre =UPPER(nombre));
+-- No deja ya que nombre tiene valores asignados.
+
+--APARTADO 13
+CREATE TABLE ALUMNO_BACKUP(
+	nummatriculabackup  NUMBER(10),
+	nombre VARCHAR(40),
+	fechanacimiento DATE,
+	telefono NUMBER(9),
+	CONSTRAINT PK_ALUMNO_BACKUP PRIMARY KEY(nummatriculabackup)
+);
+INSERT INTO ALUMNO_BACKUP SELECT * FROM ALUMNO;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
